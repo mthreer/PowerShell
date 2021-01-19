@@ -1,5 +1,3 @@
 # PowerShell
 
-hello world
-hej
-sdfsdf 
+Just random scripts
