@@ -43,13 +43,13 @@
         AUTHOR: Niklas J. MacDowall (niklasjumlin [at] gmail [dot] com)
         LASTEDIT: Jan 19, 2021
 
-	.LINK
+    .LINK
         http://blog.jumlin.com
 
     .PARAMETER ExportToJson
         Export collected Conditional Access policies as JSON to a json-file.
 
-	.EXAMPLE
+    .EXAMPLE
         ./GetConditionalAccessPolicies.ps1 -ExportToJson C:\temp\Output.json
         ./GetConditionalAccessPolicies.ps1 ; $PoliciesReport
 #>
