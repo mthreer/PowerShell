@@ -1,4 +1,60 @@
-﻿#Requires -Modules @{ModuleName="AzureADPreview";ModuleVersion="2.0.2.105"}
+﻿<# 
+    .SYNOPSIS
+        This script will pull down all your Conditional Access policies for the tenant of 
+        which you're logged into. You may either export its content to json or browse the 
+        global $PoliciesReport variable.
+
+    .DESCRIPTION
+        This script will pull down all your Conditional Access policies for the tenant of 
+        which you're logged into. 
+        
+        What's different about this script from the built-in Azure AD-cmdlet 
+        Get-AzureADMSConditionalAccessPolicy is that it will also lookup each 
+        presented ObjectId and retrieve its human-readable identifier, like DisplayName 
+        or UserPrincipalName etc, and thus presenting it in a more readable fashion.
+        
+        The script requires the module AzureADPreview with at least version 2.0.2.105 in 
+        order to use the newly included cmdlets Get-AzureADMSConditionalAccessPolicy and 
+        Get-AzureADMSRoleDefinition
+
+    .NOTES
+		Copyright (C) 2021 Niklas J. MacDowall. All rights reserved.
+
+		MIT License
+
+		Permission is hereby granted, free of charge, to any person obtaining a copy
+		of this software and associated documentation files (the ""Software""), to deal
+		in the Software without restriction, including without limitation the rights
+		to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+		copies of the Software, and to permit persons to whom the Software is
+		furnished to do so, subject to the following conditions:
+
+		The above copyright notice and this permission notice shall be included in all
+		copies or substantial portions of the Software.
+
+		THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+		IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+		FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+		AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+		LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+		OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+		SOFTWARE.
+		
+		AUTHOR: Niklas J. MacDowall (niklasjumlin [at] gmail [dot] com)
+		LASTEDIT: Jan 19, 2021
+
+	.LINK
+		http://blog.jumlin.com
+
+    .PARAMETER ExportToJson
+        Export collected Conditional Access policies as JSON to a json-file.
+
+	.EXAMPLE
+        ./GetConditionalAccessPolicies.ps1 -ExportToJson C:\temp\Output.json
+        ./GetConditionalAccessPolicies.ps1 ; $PoliciesReport
+#>
+
+#Requires -Modules @{ModuleName="AzureADPreview";ModuleVersion="2.0.2.105"}
 #Requires -Version 5
 
 param (
@@ -43,7 +99,7 @@ function Test-IsGuid
    return [System.Guid]::TryParse($StringGuid,[System.Management.Automation.PSReference]$ObjectGuid) # Returns True if successfully parsed
 }
 
-$PoliciesReport = [System.Collections.Generic.List[PSCustomObject]]@()
+$global:PoliciesReport = [System.Collections.Generic.List[PSCustomObject]]@()
 foreach ($p in $CAs) {
 	$policy = [PSCustomObject]@{ 
 		Name = $p.DisplayName
