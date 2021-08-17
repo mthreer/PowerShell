@@ -18,7 +18,7 @@ function LogAppPoolState($AppPoolName) {
 	if (($State.Value) -and ($State.Value -eq "Stopped" -or $State.Value -eq "Started")) {
 		Switch ($State.Value) {
 			"Stopped" { $EventId = "3001";$EntryType = "Warning" }
-			"Started" { $EventId = "3000";$EntryType = "Informational" }
+			"Started" { $EventId = "3000";$EntryType = "Information" }
 		}
 		Try { 
 			$Source = Get-EventLog -LogName "Application" -Source "IIS AppPool $AppPoolName" -ErrorAction Stop
