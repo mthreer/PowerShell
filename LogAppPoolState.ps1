@@ -1,4 +1,4 @@
-#Requires -Modules @{ModuleName="WebAdministration"}
+#Requires -Modules WebAdministration
 #Requires -Version 5
 
 param (
