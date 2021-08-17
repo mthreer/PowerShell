@@ -9,7 +9,7 @@ param (
 Import-Module WebAdministration
 
 function LogAppPoolState($AppPoolName) {
-	try {
+	Try {
 		$State=Get-WebAppPoolState -Name "$AppPoolName" -ErrorAction Stop
 	}
 	Catch {
@@ -19,6 +19,12 @@ function LogAppPoolState($AppPoolName) {
 		Switch ($State.Value) {
 			"Stopped" { $EventId = "3001" }
 			"Started" { $EventId = "3000" }
+		}
+		Try { 
+			$Source = Get-EventLog -LogName "Application" -Source "IIS AppPool $AppPoolName" -ErrorAction Stop
+		}
+		Catch {
+			$null = New-EventLog -LogName "Application" -Source "IIS AppPool $AppPoolName"
 		}
 		Write-EventLog -LogName "Application" -Source "IIS AppPool $AppPoolName" -EventID $EventId -EntryType Information -Message "IIS AppPool $AppPoolName state: $($State.Value)"
 	}
