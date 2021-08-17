@@ -26,7 +26,7 @@ function LogAppPoolState($AppPoolName) {
 		Catch {
 			$null = New-EventLog -LogName "Application" -Source "IIS AppPool $AppPoolName"
 		}
-		Write-EventLog -LogName "Application" -Source "IIS AppPool $AppPoolName" -EventID $EventId -EntryType Warning -Message "IIS AppPool $AppPoolName state: $($State.Value)"
+		Write-EventLog -LogName "Application" -Source "IIS AppPool $AppPoolName" -EventID $EventId -EntryType $EntryType -Message "IIS AppPool $AppPoolName state: $($State.Value)"
 	}
 }
 
