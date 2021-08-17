@@ -3,7 +3,7 @@
 
 param (
     [CmdletBinding()]
-    [Parameter(Position=0,Mandatory=$true,HelpMessage="Input IIS AppPool name to retrieve its state")]
+    [Parameter(Position=0,Mandatory=$false,HelpMessage="Input IIS AppPool name to retrieve its state")]
     [string]$Name
 )
 Import-Module WebAdministration
