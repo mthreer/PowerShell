@@ -29,7 +29,7 @@ function LogWebSiteState($WebSiteName) {
 		if ($WriteEventLog) {
 			Try { 
 				# Check if the EventLog Source is already created
-				$Source = Get-EventLog -LogName "Application" -Source "IIS WebSite $WebSiteName" -ErrorAction Stop
+				$null = Get-EventLog -LogName "Application" -Source "IIS WebSite $WebSiteName" -ErrorAction Stop
 			}
 			Catch {
 				# Create the EventLog Source 

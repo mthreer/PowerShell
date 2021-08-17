@@ -29,7 +29,7 @@ function LogAppPoolState($AppPoolName) {
 		if ($WriteEventLog) {
 			Try { 
 				# Check if the EventLog Source is already created
-				$Source = Get-EventLog -LogName "Application" -Source "IIS AppPool $AppPoolName" -ErrorAction Stop
+				$null = Get-EventLog -LogName "Application" -Source "IIS AppPool $AppPoolName" -ErrorAction Stop
 			}
 			Catch {
 				# Create the EventLog Source 
