@@ -29,5 +29,14 @@ function LogAppPoolState($AppPoolName) {
 		Write-EventLog -LogName "Application" -Source "IIS AppPool $AppPoolName" -EventID $EventId -EntryType $EntryType -Message "IIS AppPool $AppPoolName state: $($State.Value)"
 	}
 }
-
-LogAppPoolState -AppPoolName $Name
+$AppPoolNames = @(
+	"DefaultAppPool"
+)
+if (-not($Name)) {
+	ForEach ($AppPoolName in $AppPoolNames) { 
+		LogAppPoolState -AppPoolName $AppPoolName
+	}
+}
+if ($Name) {
+	LogAppPoolState -AppPoolName $Name
+}
