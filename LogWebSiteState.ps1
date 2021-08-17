@@ -3,7 +3,7 @@
 
 param (
     [CmdletBinding()]
-    [Parameter(Position=0,Mandatory=$true,HelpMessage="Input IIS WebSite name to retrieve its state")]
+    [Parameter(Position=0,Mandatory=$false,HelpMessage="Input IIS WebSite name to retrieve its state")]
     [string]$Name
 )
 Import-Module WebAdministration
@@ -29,5 +29,14 @@ function LogWebSiteState($WebSiteName) {
 		Write-EventLog -LogName "Application" -Source "IIS WebSite $WebSiteName" -EventID $EventId -EntryType $EntryType -Message "IIS WebSite $WebSiteName state: $($State.Value)"
 	}
 }
-
-LogWebSiteState -WebSiteName $Name
+$Sites = @(
+	"Default Web Site"
+)
+if (-not($Name)) {
+	ForEach ($Site in $Sites) { 
+		LogWebSiteState -WebSiteName $Site
+	}
+}
+if ($Name) {
+	LogWebSiteState -WebSiteName $Name
+}
