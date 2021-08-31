@@ -29,13 +29,10 @@ function LogWebSiteState($WebSiteName) {
 		# Write to EventLog if $WriteEventLog is True
 		if ($WriteEventLog) {
 			Try { 
-				# Check if the EventLog Source is already created
-				$null = Get-EventLog -LogName "Application" -Source "IIS WebSite $WebSiteName" -ErrorAction Stop
-			}
-			Catch {
 				# Create the EventLog Source 
-				$null = New-EventLog -LogName "Application" -Source "IIS WebSite $WebSiteName"
+				$null = New-EventLog -LogName "Application" -Source "IIS WebSite $WebSiteName" -ErrorAction Stop
 			}
+			Catch {}
 			# Write to the EventLog
 			Write-EventLog -LogName "Application" -Source "IIS WebSite $WebSiteName" -EventID $EventId -EntryType $EntryType -Message "IIS WebSite $WebSiteName state: $($State.Value)"
 		}
