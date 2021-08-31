@@ -17,7 +17,8 @@ function LogWebSiteState($WebSiteName) {
 		$State=Get-WebSiteState -Name "$WebSiteName" -ErrorAction Stop
 	}
 	Catch {
-		throw $_.Exception
+		Write-Verbose $_.Exception
+		Continue;
 	}
 	# Check if state has a value and that it contains either Stopped or Started before continuing
 	if (($State.Value) -and ($State.Value -eq "Stopped" -or $State.Value -eq "Started")) {
