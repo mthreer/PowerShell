@@ -1,0 +1,57 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+    "automationAccountName": {
+        "type": "string",
+        "metadata": {
+            "description": "Automation Account Name"
+        }
+    },
+    "resourceGroupName": {
+        "type": "string",
+        "metadata": {
+            "description": "Resource Group Name"
+        }
+    }},
+    "functions": [],
+    "variables": {},
+    "resources": [{
+        "name": "resourceGroup",
+        "type": "Microsoft.Resources/resourceGroups",
+        "apiVersion": "2019-10-01",
+        "location": "eastus",
+        "dependsOn": [
+        ],
+        "tags": {
+        }
+    },
+    {
+        "name": "automationAccount1",
+        "type": "Microsoft.Automation/automationAccounts",
+        "apiVersion": "2015-10-31",
+        "location": "[resourceGroup().location]",
+        "tags": {
+        },
+        "properties": {
+            "sku": {
+                "name": "Free"
+            }
+        }
+    },
+    {
+        "name": "logAnalyticsWorkspace1",
+        "type": "Microsoft.OperationalInsights/workspaces",
+        "apiVersion": "2015-11-01-preview",
+        "location": "[resourceGroup().location]",
+        "properties": {
+            "sku": {
+                "name": "Free"
+            },
+            "features": {
+                "searchVersion": 1
+            }
+        }
+    }],
+    "outputs": {}
+}
