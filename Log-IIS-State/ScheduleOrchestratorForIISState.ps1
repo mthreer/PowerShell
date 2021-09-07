@@ -1,4 +1,4 @@
-Workflow ScheduleOrchestrator {
+Workflow ScheduleOrchestratorForIISState {
     Param(
         [Parameter(Mandatory=$True)]
         [String]$HybridWorkerGroups,
