@@ -16,11 +16,12 @@
     }},
     "functions": [],
     "variables": {},
-    "resources": [{
+    "resources": [
+    {
         "name": "resourceGroup",
         "type": "Microsoft.Resources/resourceGroups",
-        "apiVersion": "2019-10-01",
-        "location": "eastus",
+        "apiVersion": "2021-04-01",
+        "location": "westeu",
         "dependsOn": [
         ],
         "tags": {
