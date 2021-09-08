@@ -90,7 +90,6 @@
             "runbooks": {
                 "HybridWorkerOrchestratorRunbook": {
                     "name": "IISHybridWorkerOrchestrator",
-                    "watcher": "IISHybridWorkerOrchestrator-Watcher",
                     "version": "1.0.0.0",
                     "description": "This PowerShell Workflow Runbook handles the executions of the LogWebSiteState and LogAppPoolState for each Hybrid Worker Group-server",
                     "type": "PowerShellWorkflow",
