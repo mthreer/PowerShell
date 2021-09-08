@@ -6,10 +6,10 @@
             "value": "pergb2018"
         },
         "workspaceName": {
-            "value": "p-la-iis_monitor-01"
+            "value": "p-la-iismonitor-01"
         },
         "automationAccountName": {
-            "value": "p-aa-iis_monitor-01"
+            "value": "p-aa-iismonitor-01"
         }
     }
 }
