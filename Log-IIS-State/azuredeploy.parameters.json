@@ -10,6 +10,12 @@
         },
         "automationAccountName": {
             "value": "p-aa-iismonitor-01"
+        },
+        "scriptsUri": {
+            "value": "https://raw.githubusercontent.com/mthreer/PowerShell/master/Log-IIS-State/scripts/"
+        },
+        "modulesUri": {
+            "value": "https://devopsgallerystorage.blob.core.windows.net/packages/"
         }
     }
 }
