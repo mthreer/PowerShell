@@ -206,12 +206,12 @@
                     "location": "[parameters('location')]",
                     "dependsOn": [
                         "[parameters('automationAccountName')]",
-                        "[resourceId('Microsoft.Automation/automationAccounts/runbooks',parameters('ScheduleOrchestratorRunbook'))]"
+                        "[parameters('ScheduleOrchestratorRunbook')]"
                     ],
                     "properties": {
                         "description": "[parameters('ScheduleOrchestratorRunbookDescription')]",
                         "executionFrequencyInSeconds": 300,
-                        "scriptName": "[resourceId('Microsoft.Automation/automationAccounts/runbooks',parameters('ScheduleOrchestratorRunbook'))]",
+                        "scriptName": "[parameters('ScheduleOrchestratorRunbook')]",
                         "scriptParameters": {},
                         "scriptRunOn": "string"
                     }
