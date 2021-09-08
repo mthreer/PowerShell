@@ -150,9 +150,6 @@
             "properties": {
                 "sku": {
                     "name": "Basic"
-                },
-                "encryption": {
-                    "identity": {}
                 }
             },
             "resources": [
@@ -240,6 +237,23 @@
                             "uri": "[variables('assets').runbooks.LogAppPoolStateRunBook.uri]",
                             "version": "[variables('assets').runbooks.LogAppPoolStateRunBook.version]"
                         }
+                    }
+                },
+                {
+                    "type": "watchers",
+                    "apiVersion": "2020-01-13-preview",
+                    "name": "[variables('assets').runbooks.HybridWorkerOrchestratorRunbook.name]",
+                    "location": "[parameters('location')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Automation/automationAccounts/',parameters('automationAccountName'))]",
+                        "[resourceId('Microsoft.Automation/automationAccounts/runbooks',parameters('automationAccountName'),variables('assets').runbooks.HybridWorkerOrchestratorRunbook.name)]"
+                    ],
+                    "properties": {
+                        "description": "[variables('assets').runbooks.HybridWorkerOrchestratorRunbook.description]",
+                        "executionFrequencyInSeconds": 300,
+                        "scriptName": "[variables('assets').runbooks.HybridWorkerOrchestratorRunbook.name]",
+                        "scriptParameters": {},
+                        "scriptRunOn": "string"
                     }
                 }
             ]
