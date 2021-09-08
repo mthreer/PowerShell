@@ -207,7 +207,9 @@
                     "apiVersion": "2015-10-31",
                     "location": "[parameters('location')]",
                     "dependsOn": [
-                        "[resourceId('Microsoft.Automation/automationAccounts/',parameters('automationAccountName'))]"
+                        "[resourceId('Microsoft.Automation/automationAccounts/',parameters('automationAccountName'))]",
+                        "[resourceId('Microsoft.Automation/automationAccounts/modules',parameters('automationAccountName'),variables('assets').psModules.AzAccounts.name)]",
+                        "[resourceId('Microsoft.Automation/automationAccounts/modules',parameters('automationAccountName'),variables('assets').psModules.AzAutomation.name)]"
                     ],
                     "properties": {
                         "runbookType": "[variables('assets').runbooks.LogWebSiteStateRunbook.type]",
@@ -226,7 +228,9 @@
                     "apiVersion": "2015-10-31",
                     "location": "[parameters('location')]",
                     "dependsOn": [
-                        "[resourceId('Microsoft.Automation/automationAccounts/',parameters('automationAccountName'))]"
+                        "[resourceId('Microsoft.Automation/automationAccounts/',parameters('automationAccountName'))]",
+                        "[resourceId('Microsoft.Automation/automationAccounts/modules',parameters('automationAccountName'),variables('assets').psModules.AzAccounts.name)]",
+                        "[resourceId('Microsoft.Automation/automationAccounts/modules',parameters('automationAccountName'),variables('assets').psModules.AzAutomation.name)]"
                     ],
                     "properties": {
                         "runbookType": "[variables('assets').runbooks.LogAppPoolStateRunBook.type]",
