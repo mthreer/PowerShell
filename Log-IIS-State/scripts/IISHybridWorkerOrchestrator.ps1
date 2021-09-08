@@ -39,10 +39,6 @@ Workflow IISHybridWorkerOrchestrator {
     $ContextParameters = Get-AzAutomationAccount
 
     ForEach -Parallel ($HybridWorkerGroup in $HybridWorkerGroupsArray) {
-        Write-Verbose "Waiting $timeoutInSeconds seconds ($interval minutes) before starting"
-        Start-Sleep -Seconds $timeoutInSeconds
-        $execution++
-        Write-Verbose "Running execution $execution/$executions"
         foreach ($Runbook in $Runbooks) {
             Try{
                 $job = Start-AzAutomationRunbook -Name "$Runbook" -RunOn "$HybridWorkerGroup" -ResourceGroupName "$($ContextParameters.ResourceGroupName)" -AutomationAccountName "$($ContextParameters.AutomationAccountName)"
