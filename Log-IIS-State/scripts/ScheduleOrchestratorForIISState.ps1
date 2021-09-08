@@ -5,8 +5,13 @@ Workflow ScheduleOrchestratorForIISState {
         [Parameter(Mandatory=$True)]
         [int]$Interval
     )
-
-    $HybridWorkerGroupsArray = $HybridWorkerGroups -split ","
+    
+    if (-not($HybridWorkerGroups)) {
+        throw "You need to specify at least one Hybrid Worker Group that the script should orchestrate powershell executions on."
+    }
+    if ($HybridWorkerGroups -and ($HybridWorkerGroups -match ",")) {
+        $HybridWorkerGroupsArray = $HybridWorkerGroups -split ","
+    }
 
     $Runbooks = @(
         "LogAppPoolState"

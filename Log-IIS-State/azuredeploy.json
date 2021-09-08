@@ -263,8 +263,10 @@
                         "description": "[variables('assets').watcher.HybridWorkerOrchestratorWatcher.description]",
                         "executionFrequencyInSeconds": 300,
                         "scriptName": "[variables('assets').runbooks.HybridWorkerOrchestratorRunbook.name]",
-                        "scriptParameters": {},
-                        "scriptRunOn": "string"
+                        "scriptParameters": {
+                            "HybridWorkerGroups": "Server01-HW"
+                        },
+                        "scriptRunOn": ""
                     }
                 }
             ]

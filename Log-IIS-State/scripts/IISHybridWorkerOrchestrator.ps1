@@ -1,10 +1,15 @@
 Workflow IISHybridWorkerOrchestrator {
     Param(
-        [Parameter(Mandatory=$True)]
+        [Parameter(Mandatory=$False)]
         [String]$HybridWorkerGroups
     )
 
-    $HybridWorkerGroupsArray = $HybridWorkerGroups -split ","
+    if (-not($HybridWorkerGroups)) {
+        throw "You need to specify at least one Hybrid Worker Group that the script should orchestrate powershell executions on."
+    }
+    if ($HybridWorkerGroups -and ($HybridWorkerGroups -match ",")) {
+        $HybridWorkerGroupsArray = $HybridWorkerGroups -split ","
+    }
 
     $Runbooks = @(
         "LogAppPoolState"
