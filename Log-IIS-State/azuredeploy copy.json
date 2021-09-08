@@ -45,12 +45,19 @@
                 "description": "Number of days to retain data."
             }
         },
+        /*"jobGuid": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "GUID for the schedule creation - create a unique before deploy"
+            }
+        },*/
         "_artifactsLocation": {
             "type": "string",
             "metadata": {
                 "description": "The base URI where artifacts required by this template are located including a trailing '/'"
             },
-            "defaultValue": "[uri(deployment().properties.templateLink.uri)]"
+            "defaultValue": "[deployment().properties.templateLink.uri]"
         },
         "_artifactsLocationSasToken": {
             "type": "securestring",
@@ -231,7 +238,144 @@
                         }
                     }
                 }
+                /*{
+                    "name": "[variables('assets').runbooks.ScheduleOrchestratorRunbook.scheduleName]",
+                    "type": "schedules",
+                    "apiVersion": "2015-10-31",
+                    "properties": {
+                        "description": "This schedule is intended to run only once to invoke a runbook which will create the actual schedules, after that it will be expired and can be safely deleted",
+                        "startTime": "",
+                        "expiryTime": "",
+                        "isEnabled": true,
+                        "frequency": "OneTime"
+                    },
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Automation/automationAccounts/',parameters('automationAccountName'))]",
+                        "[resourceId('Microsoft.Automation/automationAccounts/runbooks',parameters('automationAccountName'),variables('assets').runbooks.ScheduleOrchestratorRunbook.name)]"
+                    ]
+                },
+                {
+                    "name": "[parameters('jobGuid')]",
+                    "type": "jobSchedules",
+                    "apiVersion": "2015-10-31",
+                    "properties": {
+                        "runbook": {
+                            "name": "[variables('assets').runbooks.ScheduleOrchestratorRunbook.Name]"
+                        },
+                        "schedule": {
+                            "name": "[variables('assets').runbooks.ScheduleOrchestratorRunbook.scheduleName]"
+                        }
+                    },
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Automation/automationAccounts/',parameters('automationAccountName'))]",
+                        "[resourceId('Microsoft.Automation/automationAccounts/runbooks',parameters('automationAccountName'),variables('assets').runbooks.ScheduleOrchestratorRunbook.name)]",
+                        "[resourceId('Microsoft.Automation/automationAccounts/schedules',parameters('automationAccountName'),variables('assets').runbooks.ScheduleOrchestratorRunbook.scheduleName)]"
+                    ]
+                }*/
             ]
+            /* "resources": [
+                {
+                    "type": "Modules",
+                    "apiVersion": "2015-10-31",
+                    "name": "[variables('assets').psModules.AzAccounts.name]",
+                    "dependsOn": [
+                        "[parameters('automationAccountName')]"
+                    ],
+                    "properties": {
+                        "contentLink": {
+                            "uri": "[variables('assets').psModules.AzAccounts.uri]"
+                        }
+                    }
+                },
+                {
+                    "name": "[variables('assets').psModules.AzAutomation.name]",
+                    "type": "Modules",
+                    "apiVersion": "2015-10-31",
+                    "dependsOn": [
+                        "[parameters('automationAccountName')]",
+                        "[resourceId('Microsoft.Automation/automationAccounts/modules',parameters('AutomationAccountName'),variables('assets').psModules.AzAccounts.name)]"
+                    ],
+                    "properties": {
+                        "contentLink": {
+                            "uri": "[variables('assets').psModules.AzAutomation.uri]"
+                        }
+                    }
+                },
+                {
+                    "type": "runbooks",
+                    "apiVersion": "2020-01-13-preview",
+                    "name": "[parameters('ScheduleOrchestratorRunbook')]",
+                    "location": "[parameters('location')]",
+                    "dependsOn": [
+                        "[parameters('automationAccountName')]"
+                    ],
+                    "properties": {
+                        "runbookType": "PowerShellWorkflow",
+                        "logProgress": "false",
+                        "logVerbose": "false",
+                        "description": "[parameters('ScheduleOrchestratorRunbookDescription')]",
+                        "publishContentLink": {
+                            "uri": "[uri(parameters('_artifactsLocation'), concat('scripts/ScheduleOrchestratorForIISState.ps1', parameters('_artifactsLocationSasToken')))]",
+                            "version": "1.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "type": "runbooks",
+                    "apiVersion": "2020-01-13-preview",
+                    "name": "[parameters('LogWebSiteStateRunbookName')]",
+                    "location": "[parameters('location')]",
+                    "dependsOn": [
+                        "[parameters('automationAccountName')]"
+                    ],
+                    "properties": {
+                        "runbookType": "PowerShell",
+                        "logProgress": "false",
+                        "logVerbose": "false",
+                        "description": "[parameters('LogWebSiteStateRunbookDescription')]",
+                        "publishContentLink": {
+                            "uri": "[uri(parameters('_artifactsLocation'), concat('scripts/LogWebSiteState.ps1', parameters('_artifactsLocationSasToken')))]",
+                            "version": "1.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "type": "runbooks",
+                    "apiVersion": "2020-01-13-preview",
+                    "name": "[parameters('LogAppPoolStateRunBook')]",
+                    "location": "[parameters('location')]",
+                    "dependsOn": [
+                        "[parameters('automationAccountName')]"
+                    ],
+                    "properties": {
+                        "runbookType": "PowerShell",
+                        "logProgress": "false",
+                        "logVerbose": "false",
+                        "description": "[parameters('LogAppPoolStateRunbookDescription')]",
+                        "publishContentLink": {
+                            "uri": "[uri(parameters('_artifactsLocation'), concat('scripts/LogAppPoolState.ps1', parameters('_artifactsLocationSasToken')))]",
+                            "version": "1.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "type": "watchers",
+                    "apiVersion": "2020-01-13-preview",
+                    "name": "[parameters('ScheduleOrchestratorRunbook')]",
+                    "location": "[parameters('location')]",
+                    "dependsOn": [
+                        "[parameters('automationAccountName')]",
+                        "[parameters('ScheduleOrchestratorRunbook')]"
+                    ],
+                    "properties": {
+                        "description": "[parameters('ScheduleOrchestratorRunbookDescription')]",
+                        "executionFrequencyInSeconds": 300,
+                        "scriptName": "[parameters('ScheduleOrchestratorRunbook')]",
+                        "scriptParameters": {},
+                        "scriptRunOn": "string"
+                    }
+                }
+            ] */
         },
         {
             "type": "Microsoft.OperationalInsights/workspaces/linkedServices",
