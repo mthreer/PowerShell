@@ -199,7 +199,7 @@
                     ],
                     "properties": {
                         "runbookType": "[variables('assets').runbooks.HybridWorkerOrchestratorRunbook.type]",
-                        "logProgress": "true",
+                        "logProgress": true,
                         "logVerbose": false,
                         "description": "[variables('assets').runbooks.HybridWorkerOrchestratorRunbook.description]",
                         "publishContentLink": {
@@ -220,7 +220,7 @@
                     ],
                     "properties": {
                         "runbookType": "[variables('assets').runbooks.LogWebSiteStateRunbook.type]",
-                        "logProgress": "true",
+                        "logProgress": true,
                         "logVerbose": false,
                         "description": "[variables('assets').runbooks.LogWebSiteStateRunbook.description]",
                         "publishContentLink": {
@@ -241,7 +241,7 @@
                     ],
                     "properties": {
                         "runbookType": "[variables('assets').runbooks.LogAppPoolStateRunBook.type]",
-                        "logProgress": "true",
+                        "logProgress": true,
                         "logVerbose": false,
                         "description": "[variables('assets').runbooks.LogAppPoolStateRunBook.description]",
                         "publishContentLink": {
