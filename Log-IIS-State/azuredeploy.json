@@ -208,7 +208,7 @@
                 {
                     "type": "Microsoft.Automation/automationAccounts/webhooks",
                     "apiVersion": "2015-10-31",
-                    "name": "[concat(parameters('automationAccountName'), '/HybridWorkers')]",
+                    "name": "[concat(parameters('automationAccountName'), '/WebhookParameters')]",
                     "dependsOn": [
                         "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]",
                         "[resourceId('Microsoft.Automation/automationAccounts/runbooks',parameters('automationAccountName'),variables('assets').runbooks.HybridWorkerOrchestratorRunbook.name)]"
