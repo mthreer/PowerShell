@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "workspaceName": {
+        "logAnalyticsWorkspaceName": {
             "type": "string",
             "metadata": {
                 "description": "Log Analytics Workspace name"
@@ -134,7 +134,7 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces",
             "apiVersion": "2020-08-01",
-            "name": "[parameters('workspaceName')]",
+            "name": "[parameters('logAnalyticsWorkspaceName')]",
             "location": "[parameters('location')]",
             "properties": {
                 "sku": {
@@ -153,7 +153,7 @@
             "name": "[parameters('automationAccountName')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[parameters('workspaceName')]"
+                "[parameters('logAnalyticsWorkspaceName')]"
             ],
             "identity": {
                 "type": "SystemAssigned"
@@ -275,10 +275,10 @@
         {
             "type": "Microsoft.OperationalInsights/workspaces/linkedServices",
             "apiVersion": "2020-08-01",
-            "name": "[concat(parameters('workspaceName'), '/' , 'Automation')]",
+            "name": "[concat(parameters('logAnalyticsWorkspaceName'), '/' , 'Automation')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[parameters('workspaceName')]",
+                "[parameters('logAnalyticsWorkspaceName')]",
                 "[parameters('automationAccountName')]"
             ],
             "properties": {
