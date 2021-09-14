@@ -1,16 +1,4 @@
 Workflow IISHybridWorkerOrchestrator {
-    Param(
-        [Parameter(Mandatory=$False)]
-        [String]$HybridWorkerGroups
-    )
-
-    if (-not($HybridWorkerGroups)) {
-        throw "You need to specify at least one Hybrid Worker Group that the script should orchestrate powershell executions on."
-    }
-    if ($HybridWorkerGroups -and ($HybridWorkerGroups -match ",")) {
-        $HybridWorkerGroupsArray = $HybridWorkerGroups -split ","
-    }
-
     $Runbooks = @(
         "LogAppPoolState"
         "LogWebsiteState"
@@ -43,15 +31,20 @@ Workflow IISHybridWorkerOrchestrator {
     # Retrieve ResourceGroupName and AutomationAccountName to use as input to Start-AzAutomationRunbook
     $ContextParameters = Get-AzAutomationAccount
 
-    ForEach -Parallel ($HybridWorkerGroup in $HybridWorkerGroupsArray) {
-        foreach ($Runbook in $Runbooks) {
-            Try{
-                $job = Start-AzAutomationRunbook -Name "$Runbook" -RunOn "$HybridWorkerGroup" -ResourceGroupName "$($ContextParameters.ResourceGroupName)" -AutomationAccountName "$($ContextParameters.AutomationAccountName)"
-                Write-Output "Started parallel job `'$Runbook`' on `'$HybridWorkerGroup`': $($job.JobId)"
-            }
-            Catch {
-                Write-Error -Message $_.Exception.Message
-                throw $_.Exception
+    # Retrieve all Hybrid Worker Groups
+    $AllHybridWorkerGroups = (Get-AzAutomationHybridWorkerGroup -ResourceGroupName "$($ContextParameters.ResourceGroupName)" -AutomationAccountName "$($ContextParameters.AutomationAccountName)" -ErrorAction SilentlyContinue).Name
+
+    if ($AllHybridWorkerGroups) {
+        ForEach -Parallel ($HybridWorkerGroup in $AllHybridWorkerGroups) {
+            foreach ($Runbook in $Runbooks) {
+                Try{
+                    $job = Start-AzAutomationRunbook -Name "$Runbook" -RunOn "$HybridWorkerGroup" -ResourceGroupName "$($ContextParameters.ResourceGroupName)" -AutomationAccountName "$($ContextParameters.AutomationAccountName)"
+                    Write-Output "Started parallel job `'$Runbook`' on `'$HybridWorkerGroup`': $($job.JobId)"
+                }
+                Catch {
+                    Write-Error -Message $_.Exception.Message
+                    throw $_.Exception
+                }
             }
         }
     }
