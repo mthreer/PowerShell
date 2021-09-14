@@ -1,21 +1,14 @@
 Workflow IISHybridWorkerOrchestrator {
     Param(
-        [Parameter (Mandatory= $false)]
-        [Object]$WebhookData
+        [Parameter(Mandatory=$False)]
+        [String]$HybridWorkerGroups
     )
 
-    if ($WebhookData) {
-        Write-Verbose $WebhookData
-
-        # Check header for message to validate request
-        if ($WebhookData.RequestHeader.Key -eq 'c5f8d8d8-bf94-4132-a305-0a6f07921e21') {
-            Write-Verbose "Header has required information"
-            $HybridWorkerGroups = (ConvertFrom-Json -InputObject $WebhookData.RequestBody).HybridWorkerGroups
-        }
-        else {
-            Write-Verbose "Header missing required information";
-            exit;
-        }
+    if (-not($HybridWorkerGroups)) {
+        throw "You need to specify at least one Hybrid Worker Group that the script should orchestrate powershell executions on."
+    }
+    if ($HybridWorkerGroups -and ($HybridWorkerGroups -match ",")) {
+        $HybridWorkerGroupsArray = $HybridWorkerGroups -split ","
     }
 
     $Runbooks = @(
@@ -50,12 +43,7 @@ Workflow IISHybridWorkerOrchestrator {
     # Retrieve ResourceGroupName and AutomationAccountName to use as input to Start-AzAutomationRunbook
     $ContextParameters = Get-AzAutomationAccount
 
-    # Retrieve all Hybrid Worker Groups
-    $AllHybridWorkerGroups = Get-AzAutomationHybridWorkerGroup -ResourceGroupName "$($ContextParameters.ResourceGroupName)" -AutomationAccountName "$($ContextParameters.AutomationAccountName)"
-
-    $AllHybridWorkerGroups
-
-    ForEach -Parallel ($HybridWorkerGroup in $HybridWorkerGroups) {
+    ForEach -Parallel ($HybridWorkerGroup in $HybridWorkerGroupsArray) {
         foreach ($Runbook in $Runbooks) {
             Try{
                 $job = Start-AzAutomationRunbook -Name "$Runbook" -RunOn "$HybridWorkerGroup" -ResourceGroupName "$($ContextParameters.ResourceGroupName)" -AutomationAccountName "$($ContextParameters.AutomationAccountName)"
