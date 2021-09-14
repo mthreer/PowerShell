@@ -311,12 +311,6 @@
                             "runAfter": {},
                             "type": "Http",
                             "inputs": {
-                                "body": {
-                                    "HybridWorkerGroups": [
-                                        "Dummy1",
-                                        "Dummy2"
-                                    ]
-                                },
                                 "headers": {
                                     "Key": "c5f8d8d8-bf94-4132-a305-0a6f07921e21"
                                 },

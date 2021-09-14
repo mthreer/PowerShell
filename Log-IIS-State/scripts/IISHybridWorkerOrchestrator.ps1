@@ -10,7 +10,9 @@ Workflow IISHybridWorkerOrchestrator {
         # Check header for message to validate request
         if ($WebhookData.RequestHeader.Key -eq 'c5f8d8d8-bf94-4132-a305-0a6f07921e21') {
             Write-Verbose "Header has required information"
-            $HybridWorkerGroups = (ConvertFrom-Json -InputObject $WebhookData.RequestBody).HybridWorkerGroups
+
+            # We dont provide the body
+            #$HybridWorkerGroups = (ConvertFrom-Json -InputObject $WebhookData.RequestBody).HybridWorkerGroups
         }
         else {
             Write-Verbose "Header missing required information";
@@ -51,19 +53,19 @@ Workflow IISHybridWorkerOrchestrator {
     $ContextParameters = Get-AzAutomationAccount
 
     # Retrieve all Hybrid Worker Groups
-    $AllHybridWorkerGroups = Get-AzAutomationHybridWorkerGroup -ResourceGroupName "$($ContextParameters.ResourceGroupName)" -AutomationAccountName "$($ContextParameters.AutomationAccountName)"
+    $AllHybridWorkerGroups = (Get-AzAutomationHybridWorkerGroup -ResourceGroupName "$($ContextParameters.ResourceGroupName)" -AutomationAccountName "$($ContextParameters.AutomationAccountName)" -ErrorAction SilentlyContinue).Name
 
-    $AllHybridWorkerGroups
-
-    ForEach -Parallel ($HybridWorkerGroup in $HybridWorkerGroups) {
-        foreach ($Runbook in $Runbooks) {
-            Try{
-                $job = Start-AzAutomationRunbook -Name "$Runbook" -RunOn "$HybridWorkerGroup" -ResourceGroupName "$($ContextParameters.ResourceGroupName)" -AutomationAccountName "$($ContextParameters.AutomationAccountName)"
-                Write-Output "Started parallel job `'$Runbook`' on `'$HybridWorkerGroup`': $($job.JobId)"
-            }
-            Catch {
-                Write-Error -Message $_.Exception.Message
-                throw $_.Exception
+    if ($AllHybridWorkerGroups) {
+        ForEach -Parallel ($HybridWorkerGroup in $AllHybridWorkerGroups) {
+            foreach ($Runbook in $Runbooks) {
+                Try{
+                    $job = Start-AzAutomationRunbook -Name "$Runbook" -RunOn "$HybridWorkerGroup" -ResourceGroupName "$($ContextParameters.ResourceGroupName)" -AutomationAccountName "$($ContextParameters.AutomationAccountName)"
+                    Write-Output "Started parallel job `'$Runbook`' on `'$HybridWorkerGroup`': $($job.JobId)"
+                }
+                Catch {
+                    Write-Error -Message $_.Exception.Message
+                    throw $_.Exception
+                }
             }
         }
     }
