@@ -37,11 +37,11 @@
             }
         },
         "webhookName": {
-             "type": "String",
-             "defaultValue": "WebhookParams",
-             "metadata": {
-                 "description": "Webhook Name"
-             }
+            "type": "String",
+            "defaultValue": "WebhookParams",
+            "metadata": {
+                "description": "Webhook Name"
+            }
         },
         "logicAppWorkflowsName": {
             "defaultValue": "SchedulerIISStateLogger",
@@ -333,9 +333,9 @@
         }
     ],
     "outputs": {
-         "webhookUri": {
-             "type": "String",
-             "value": "[reference(parameters('webhookName')).uri]"
-         }
+        "webhookUri": {
+            "type": "String",
+            "value": "[reference(parameters('webhookName')).uri]"
+        }
     }
 }
