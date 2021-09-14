@@ -36,6 +36,12 @@
                 "description": "Automation account name"
             }
         },
+        "webhookName": {
+             "type": "String",
+             "metadata": {
+                 "description": "Webhook Name"
+             }
+        },
         "logicAppWorkflowsName": {
             "defaultValue": "SchedulerIISStateLogger",
             "type": "String"
@@ -206,9 +212,9 @@
                     }
                 },
                 {
-                    "type": "Microsoft.Automation/automationAccounts/webhooks",
+                    "type": "webhooks",
                     "apiVersion": "2015-10-31",
-                    "name": "[concat(parameters('automationAccountName'), '/WebhookParameters')]",
+                    "name": "[parameters('webhookName')]",
                     "dependsOn": [
                         "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]",
                         "[resourceId('Microsoft.Automation/automationAccounts/runbooks',parameters('automationAccountName'),variables('assets').runbooks.HybridWorkerOrchestratorRunbook.name)]"
@@ -217,7 +223,7 @@
                         "isEnabled": true,
                         "expiryTime": "2025-03-01T23:59:59.9+00:00",
                         "runbook": {
-                            "name": "IISHybridWorkerOrchestrator"
+                            "name": "[variables('assets').runbooks.HybridWorkerOrchestratorRunbook.name]"
                         }
                     }
                 },
@@ -315,7 +321,7 @@
                                     "Key": "c5f8d8d8-bf94-4132-a305-0a6f07921e21"
                                 },
                                 "method": "POST",
-                                "uri": "https://localhost"
+                                "uri": "[reference(parameters('webhookName')).uri]"
                             }
                         }
                     },
@@ -325,5 +331,10 @@
             }
         }
     ],
-    "outputs": {}
+    "outputs": {
+         "webhookUri": {
+             "type": "String",
+             "value": "[reference(parameters('webhookName')).uri]"
+         }
+    }
 }
