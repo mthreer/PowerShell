@@ -120,6 +120,13 @@
                     "uri": "[uri(parameters('scriptsUri'),'LogAppPoolState.ps1')]"
                     /*"uri": "[uri(parameters('_artifactsLocation'), concat('scripts/LogAppPoolState.ps1', parameters('_artifactsLocationSasToken')))]"*/
                 }
+            },
+            "watcher": {
+                "HybridWorkerOrchestratorWatcher": {
+                    "name": "IISHybridWorkerOrchestrator-Watcher",
+                    "description": "This Watcher will trigger the IISHybridWorkerOrchestrator PowerShell Workflow Runbook.",
+                    "Id": ""
+                }
             }
         }
     },
@@ -206,22 +213,6 @@
                     }
                 },
                 {
-                    "type": "Microsoft.Automation/automationAccounts/webhooks",
-                    "apiVersion": "2015-10-31",
-                    "name": "[concat(parameters('automationAccountName'), '/HybridWorkers')]",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]",
-                        "[resourceId('Microsoft.Automation/automationAccounts/runbooks',parameters('automationAccountName'),variables('assets').runbooks.HybridWorkerOrchestratorRunbook.name)]"
-                    ],
-                    "properties": {
-                        "isEnabled": true,
-                        "expiryTime": "2025-03-01T23:59:59.9+00:00",
-                        "runbook": {
-                            "name": "IISHybridWorkerOrchestrator"
-                        }
-                    }
-                },
-                {
                     "name": "[variables('assets').runbooks.LogWebSiteStateRunbook.name]",
                     "type": "runbooks",
                     "apiVersion": "2015-10-31",
@@ -262,6 +253,25 @@
                             "version": "[variables('assets').runbooks.LogAppPoolStateRunBook.version]"
                         }
                     }
+                },
+                {
+                    "type": "watchers",
+                    "apiVersion": "2020-01-13-preview",
+                    "name": "[variables('assets').watcher.HybridWorkerOrchestratorWatcher.name]",
+                    "location": "[parameters('location')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Automation/automationAccounts/',parameters('automationAccountName'))]",
+                        "[resourceId('Microsoft.Automation/automationAccounts/runbooks',parameters('automationAccountName'),variables('assets').runbooks.HybridWorkerOrchestratorRunbook.name)]"
+                    ],
+                    "properties": {
+                        "description": "[variables('assets').watcher.HybridWorkerOrchestratorWatcher.description]",
+                        "executionFrequencyInSeconds": 300,
+                        "scriptName": "[variables('assets').runbooks.HybridWorkerOrchestratorRunbook.name]",
+                        "scriptParameters": {
+                            "HybridWorkerGroups": "Server01-HW"
+                        },
+                        "scriptRunOn": ""
+                    }
                 }
             ]
         },
@@ -276,58 +286,6 @@
             ],
             "properties": {
                 "resourceId": "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
-            }
-        },
-        {
-            "type": "Microsoft.Logic/workflows",
-            "apiVersion": "2017-07-01",
-            "name": "[parameters('logicAppWorkflowsName')]",
-            "location": "[parameters('location')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Automation/automationAccounts/',parameters('automationAccountName'))]",
-                "[resourceId('Microsoft.Automation/automationAccounts/runbooks',parameters('automationAccountName'),variables('assets').runbooks.HybridWorkerOrchestratorRunbook.name)]"
-            ],
-            "properties": {
-                "state": "Disabled",
-                "definition": {
-                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
-                    "contentVersion": "1.0.0.0",
-                    "parameters": {},
-                    "triggers": {
-                        "Recurrence": {
-                            "recurrence": {
-                                "frequency": "Minute",
-                                "interval": 5
-                            },
-                            "evaluatedRecurrence": {
-                                "frequency": "Minute",
-                                "interval": 5
-                            },
-                            "type": "Recurrence"
-                        }
-                    },
-                    "actions": {
-                        "HTTP": {
-                            "runAfter": {},
-                            "type": "Http",
-                            "inputs": {
-                                "body": {
-                                    "HybridWorkerGroups": [
-                                        "Dummy1",
-                                        "Dummy2"
-                                    ]
-                                },
-                                "headers": {
-                                    "Key": "c5f8d8d8-bf94-4132-a305-0a6f07921e21"
-                                },
-                                "method": "POST",
-                                "uri": "https://localhost"
-                            }
-                        }
-                    },
-                    "outputs": {}
-                },
-                "parameters": {}
             }
         }
     ],
