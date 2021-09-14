@@ -38,6 +38,7 @@
         },
         "webhookName": {
              "type": "String",
+             "defaultValue": "WebhookParams",
              "metadata": {
                  "description": "Webhook Name"
              }
