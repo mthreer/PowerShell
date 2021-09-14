@@ -5,7 +5,7 @@
         "sku": {
             "value": "pergb2018"
         },
-        "workspaceName": {
+        "logAnalyticsWorkspaceName": {
             "value": "p-la-iismonitor-01"
         },
         "automationAccountName": {
