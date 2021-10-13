@@ -214,7 +214,6 @@ function VerifyValidDate {
             $Age = [datetime]([datetime]::Now.AddYears(-1).AddMonths(-1).AddDays(-1) - [datetime]$DateFromStr.Date).Ticks
             if ($Age) { $Result.Age = "$($Age.Year) years $($Age.Month) months $($Age.Day) Days" }
             $script:ValidDate = $True
-            return
         } else { 
             return $False
         }
@@ -326,8 +325,9 @@ function VerifyControlNum {
             [int]$Base10 = $LuhnSum
         } else {
             [int]$Base10 = $LuhnSum + (10 - ($LuhnSum % 10))
-        }
+        } 
         [int]$verificationNum = $Base10 - $LuhnSum
+        # [int]$verificationNum = (10 - ($LuhnSum % 10)) % 10
     }
     end {
         if ($ControlNum -eq $verificationNum) {
