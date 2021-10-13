@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    This script will validate a Swedish personal number (Social Security Number) using the Luhn-alghorithm (modulus-10). It will also validate that the string is a valid date.
+    This script will validate a Swedish personal number (Social Security Number) using the Luhn-algorithm (modulus-10). It will also validate that the string is a valid date.
 .EXAMPLE
     PS C:\> ./Verify-SwedishPersonalNumber.ps1 -PNR 871031-7549
     This will validate a Swedish personal number (Social Security Number) and the persons birth place and sex/gender (Since the default value for the parameter ValidateBirthPlaceAndSex is $True)
