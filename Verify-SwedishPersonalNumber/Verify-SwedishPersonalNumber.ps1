@@ -256,13 +256,15 @@ function ValidateBirthPlaceAndSex {
     process {
         if ( ($Result.Year -gt 1946) -and ($BirthPlaceDigits -in @(93..99)) ) {
             $Result.BirthPlace = $BirthPlace."$BirthPlaceDigits"
-        } else {
-            if ( ($Result.Year -lt 1990) -and ($BirthPlace."$BirthPlaceDigits") ) {
-                $Result.BirthPlace = $BirthPlace."$BirthPlaceDigits"
-            } else {
-                $Result.BirthPlace = "Not applicable"
-            }
         }
+        if ( ($Result.Year -lt 1990) -and (-not($BirthPlaceDigits -in @(93..99))) ) {
+            if ($BirthPlace."$BirthPlaceDigits") {
+                $Result.BirthPlace = $BirthPlace."$BirthPlaceDigits"
+            }
+        } else {
+            $Result.BirthPlace = "Not applicable"
+        }
+
         if ($SexDigit % 2 -eq 0) {
             $Result.Sex = "Female"
         }
