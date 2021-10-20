@@ -80,6 +80,7 @@ $DateFromStr = [PSCustomObject]@{
     Year        =   [PSCustomObject]@{
         StringValue = $null
         Format      = $null
+        AgeAdd      = $null
     }
     Month       =   [PSCustomObject]@{
         StringValue = $null
@@ -140,6 +141,10 @@ function VerifyValidDate {
                         $DateFromStr.DigitChain = $String[0..($String.Length -2)]
                     }
                     11 { 
+                        # Age 100 plus
+                        if ($String.Substring(6,1) -eq "+") {
+                            $DateFromStr.Year.AgeAdd = 100
+                        }
                         # Remove separator and keep all but last digit (which is the contrulNum)
                         $DateFromStr.DigitChain = $String.Replace($String.Substring(6,1),'')[0..($String.Length -3)]
                     }
@@ -161,7 +166,11 @@ function VerifyValidDate {
                         # Keep all but last digit (which is the contrulNum) 
                         $DateFromStr.DigitChain = $String[2..($String.Length -2)]
                     }
-                    13 { 
+                    13 {
+                        # Age 100 plus
+                        if ($String.Substring(8,1) -eq "+") {
+                            $DateFromStr.Year.AgeAdd = 100
+                        }
                         # Remove separator and keep all but last digit (which is the contrulNum)
                         $DateFromStr.DigitChain = $String.Replace($String.Substring(8,1),'')[2..($String.Length -3)]
                     }
@@ -183,7 +192,12 @@ function VerifyValidDate {
         [ref]$year = 0
         if ([DateTime]::TryParseExact($DateFromStr.Year.StringValue,$DateFromStr.Year.Format,$null,'None',$year)) {
             Out-Null
-            $Result.Year = $($year.Value.Year)
+            if ($DateFromStr.Year.AgeAdd) {
+                $Result.Year = $($year.Value.Year) - 100
+            }
+            else {
+                $Result.Year = $($year.Value.Year)
+            }
         } else {
             Write-Error "Cannot parse year: '$($DateFromStr.Year.StringValue)'"
             Remove-Variable year
@@ -263,12 +277,12 @@ function ExtraFacts {
         [String]$String
     )
     begin {
-        $DateFromString = [datetime]"$String"
+        $DateString = [datetime]"$String"
         $thisYear = (get-date).Year
         $Result | Add-Member -Name "StarSign" -Type NoteProperty -Value ""
     }
     process {
-        $starSign = switch ($DateFromString.DayOfYear) {
+        $starSign = switch ($DateString.DayOfYear) {
             { $_ -in @( (([datetime]"$thisYear-12-22").DayOfYear)..365; 0.. (([datetime]"$thisYear-01-19").DayOfYear) ) } { [PSCustomObject]@{ Eng = "Capricorn"; Swe = "Stenbocken" } }
             { $_ -in @( (([datetime]"$thisYear-01-20").DayOfYear)..(([datetime]"$thisYear-02-18").DayOfYear) ) } { [PSCustomObject]@{ Eng = "Aquarius"; Swe = "Vattumannen" } }
             { $_ -in @( (([datetime]"$thisYear-02-19").DayOfYear)..(([datetime]"$thisYear-03-20").DayOfYear) ) } { [PSCustomObject]@{ Eng = "Pisces"; Swe = "Fiskarna" } }
