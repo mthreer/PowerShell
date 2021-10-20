@@ -120,6 +120,7 @@ $BirthPlace=@{}
 (82..84).foreach{ $BirthPlace."$($_)" = "J$([char]228)mtlands l$([char]228)n" }
 (85..88).foreach{ $BirthPlace."$($_)" = "V$([char]228)sterbottens l$([char]228)n" }
 (89..92).foreach{ $BirthPlace."$($_)" = "Norrbottens l$([char]228)n" }
+(93..99).ForEach{ $BirthPlace."$($_)" = "Immigrated" }
 
 function VerifyValidDate {
     [CmdletBinding()]
@@ -192,11 +193,14 @@ function VerifyValidDate {
         [ref]$year = 0
         if ([DateTime]::TryParseExact($DateFromStr.Year.StringValue,$DateFromStr.Year.Format,$null,'None',$year)) {
             Out-Null
-            if ($DateFromStr.Year.AgeAdd) {
+            if ($year.Value.Year -gt (Get-Date).Year) {
                 $Result.Year = $($year.Value.Year) - 100
             }
             else {
                 $Result.Year = $($year.Value.Year)
+            }
+            if ($DateFromStr.Year.AgeAdd) {
+                $Result.Year = $($year.Value.Year) - 100
             }
         } else {
             Write-Error "Cannot parse year: '$($DateFromStr.Year.StringValue)'"
@@ -250,12 +254,14 @@ function ValidateBirthPlaceAndSex {
         $Result | Add-Member -Name "BirthPlace" -Type NoteProperty -Value ""
     }
     process {
-        if ($Result.Year -lt 1990) {
-            if ($BirthPlace."$BirthPlaceDigits") {
-                $Result.BirthPlace = $BirthPlace."$BirthPlaceDigits"
-            }
+        if ( ($Result.Year -gt 1946) -and ($BirthPlaceDigits -in @(93..99)) ) {
+            $Result.BirthPlace = $BirthPlace."$BirthPlaceDigits"
         } else {
-            $Result.BirthPlace = "Not applicable"
+            if ( ($Result.Year -lt 1990) -and ($BirthPlace."$BirthPlaceDigits") ) {
+                $Result.BirthPlace = $BirthPlace."$BirthPlaceDigits"
+            } else {
+                $Result.BirthPlace = "Not applicable"
+            }
         }
         if ($SexDigit % 2 -eq 0) {
             $Result.Sex = "Female"
