@@ -43,3 +43,9 @@ This will validate the persons birth place and sex/gender.
 
 Default value: $False \
 Evaluate extra facts based on the personal number.
+
+## Sources of facts ##
+  - [Wikipedia Sweden: Personnummer i Sverige](https://sv.wikipedia.org/wiki/Personnummer_i_Sverige)
+  - [Wikipedia Sweden: Luhn-algoritmen](https://sv.wikipedia.org/wiki/Luhn-algoritmen)
+  - [The Swedish Tax Agency: The structure of a personal identity number](https://skatteverket.se/servicelankar/otherlanguages/inenglish/individualsandemployees/livinginsweden/personalidentitynumberandcoordinationnumber.4.2cf1b5cd163796a5c8b4295.html)
+  - [Wikipedia English: Personal identity number (Sweden)](https://en.wikipedia.org/wiki/Personal_identity_number_(Sweden))
