@@ -306,7 +306,7 @@ function ExtraFacts {
         }
     }
     end {
-        $Result.StarSign = "$($starSign.Swe) `($($starSign.Eng)`)"
+        $Result.StarSign = "$($starSign.Eng) `($($starSign.Swe)`)"
     }
 }
 function VerifyControlNum {
