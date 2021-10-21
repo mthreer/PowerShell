@@ -168,10 +168,6 @@ function VerifyValidDate {
                         $DateFromStr.DigitChain = $String[2..($String.Length -2)]
                     }
                     13 {
-                        # Age 100 plus
-                        if ($String.Substring(8,1) -eq "+") {
-                            #$DateFromStr.Year.AgeAdd = 100
-                        }
                         # Remove separator and keep all but last digit (which is the contrulNum)
                         $DateFromStr.DigitChain = $String.Replace($String.Substring(8,1),'')[2..($String.Length -3)]
                     }
