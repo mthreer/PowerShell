@@ -43,7 +43,7 @@
     SOFTWARE.
     
     AUTHOR: Niklas J. MacDowall (niklasjumlin [at] gmail [dot] com)
-    LASTEDIT: Oct 12, 2021
+    LASTEDIT: Oct 21, 2021
 .LINK
     http://blog.jumlin.com
 #>
