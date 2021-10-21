@@ -13,7 +13,7 @@
 .PARAMETER PNR
     The Swedish personal number (Social Security Number) to validate. 
     Possible formats are: yyMMdd-XXXX, yyMMddXXXX, yyyyMMdd-XXXX and yyyyMMddXXXX
-    The dash delimiter can be any delimiter of your choice.
+    The dash delimiter can be any delimiter of your choice, however usage of a plus sign as delimiter indicates the person is of age 100 or more.
 .PARAMETER ValidateBirthPlaceAndSex
     Default value: $True
     This will validate the persons birth place and sex/gender. 
@@ -170,7 +170,7 @@ function VerifyValidDate {
                     13 {
                         # Age 100 plus
                         if ($String.Substring(8,1) -eq "+") {
-                            $DateFromStr.Year.AgeAdd = 100
+                            #$DateFromStr.Year.AgeAdd = 100
                         }
                         # Remove separator and keep all but last digit (which is the contrulNum)
                         $DateFromStr.DigitChain = $String.Replace($String.Substring(8,1),'')[2..($String.Length -3)]
@@ -262,7 +262,7 @@ function ValidateBirthPlaceAndSex {
                 $Result.BirthPlace = $BirthPlace."$BirthPlaceDigits"
             }
         } else {
-            $Result.BirthPlace = "Not applicable"
+            $Result.BirthPlace = "Not applicable (Born after 1990)"
         }
 
         if ($SexDigit % 2 -eq 0) {
