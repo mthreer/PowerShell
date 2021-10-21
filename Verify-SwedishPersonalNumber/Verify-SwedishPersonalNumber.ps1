@@ -17,7 +17,7 @@
 .PARAMETER ValidateBirthPlaceAndSex
     Default value: $True
     This will validate the persons birth place and sex/gender. 
-.PARAMETER Extra
+.PARAMETER ExtraFacts
     Default value: $False
     Evaluate extra facts based on the personal number.
     Currently Supported facts: Returns the the persons Star Sign in Swedish and English.

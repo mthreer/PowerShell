@@ -41,7 +41,7 @@ The dash delimiter can be any delimiter of your choice, however usage of a plus 
 Default value: $True \
 This will validate the persons birth place and sex/gender.
 
-### **-Extra** ###
+### **-ExtraFacts** ###
 
 Default value: $False \
 Evaluate extra facts based on the personal number.
