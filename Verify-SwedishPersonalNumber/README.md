@@ -2,6 +2,8 @@
 
 This script will validate a Swedish personal number (Social Security Number) using the Luhn-algorithm (modulus-10). It will also validate that the string is a valid date.
 
+> All personal identity numbers in the examples are generated ones!
+
 ![Example screenshot in Windows PowerShell](./images/powershell_cWVCzeLFKc.png "Example screenshot in Windows PowerShell")
 
 ## Usage examples ##
