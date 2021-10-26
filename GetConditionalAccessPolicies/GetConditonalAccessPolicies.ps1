@@ -119,7 +119,7 @@ foreach ($p in $CAs) {
                 }
                 else{$a}
                 ))
-            ExcludeUsers = $([array]$a=$p.Conditions.Users.ExcludeUsers;$(
+            ExcludedUsers = $([array]$a=$p.Conditions.Users.ExcludeUsers;$(
                 if($a -ne "All"){
                     $a.ForEach{ 
                         if(Test-IsGuid $_){
@@ -145,15 +145,16 @@ foreach ($p in $CAs) {
         }
         Conditions = [PSCustomObject]@{
             Platforms = [PSCustomObject]@{
-                "Not yet implemented in the script" = $null
+                IncludedPlatforms = $( [array]$a=$p.Conditions.Platforms.IncludePlatforms; $a.ForEach{ $_ } )
+                ExcludedPlatforms = $( [array]$a=$p.Conditions.Platforms.ExcludePlatforms; $a.ForEach{ $_ } )
             }
             Locations = [PSCustomObject]@{
-                IncludedLocations = $([array]$a=$p.Conditions.Locations.IncludeLocations;if($a -ne "All"){$a.ForEach{
+                IncludedLocations = $([array]$a=$p.Conditions.Locations.IncludeLocations;if(($a -ne "All") -and ($a -ne "AllTrusted")){$a.ForEach{
                     [PSCustomObject]@{
                         $((Get-AzureADMSNamedLocationPolicy -PolicyId $_).DisplayName) = $((Get-AzureADMSNamedLocationPolicy -PolicyId $_).Ipranges.CidrAddress)
                     }
                     }}else{$a})
-                ExcludedLocations = $([array]$a=$p.Conditions.Locations.ExcludeLocations;if($a -ne "All"){$a.ForEach{
+                ExcludedLocations = $([array]$a=$p.Conditions.Locations.ExcludeLocations;if(($a -ne "All") -and ($a -ne "AllTrusted")){$a.ForEach{
                     [PSCustomObject]@{
                         $((Get-AzureADMSNamedLocationPolicy -PolicyId $_).DisplayName) = $((Get-AzureADMSNamedLocationPolicy -PolicyId $_).Ipranges.CidrAddress)
                     }
