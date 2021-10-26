@@ -145,8 +145,8 @@ foreach ($p in $CAs) {
         }
         Conditions = [PSCustomObject]@{
             Platforms = [PSCustomObject]@{
-                IncludedPlatforms = $( [array]$a=$p.Conditions.Platforms.IncludePlatforms; $a.ForEach{ $_ } )
-                ExcludedPlatforms = $( [array]$a=$p.Conditions.Platforms.ExcludePlatforms; $a.ForEach{ $_ } )
+                IncludedPlatforms = $( [string[]]$a=$p.Conditions.Platforms.IncludePlatforms; $a.ForEach{ $_ } )
+                ExcludedPlatforms = $( [string[]]$a=$p.Conditions.Platforms.ExcludePlatforms; $a.ForEach{ $_ } )
             }
             Locations = [PSCustomObject]@{
                 IncludedLocations = $([array]$a=$p.Conditions.Locations.IncludeLocations;if(($a -ne "All") -and ($a -ne "AllTrusted")){$a.ForEach{
