@@ -146,22 +146,26 @@ function New-StrongPassword {
     }
     Process {
         try {
-            if ($ExportableOutput) {
-                $NewPasswords = [System.Collections.Generic.List[PSCustomObject]]@()
+            if ($Count -eq "1") {
+                $NewPasswords = ($Selection | Get-Random -Count $Length) -join ""
             } else {
-                $NewPasswords = [Ordered]@{}
-            }
-            $i=1;while ($i -le $Count) {
                 if ($ExportableOutput) {
-                    $NewPassword = [PSCustomObject]@{ 
-                        "PasswordNumber" = $i
-                        "PasswordValue"  = ($Selection | Get-Random -Count $Length) -join ""
-                    }
-                    $NewPasswords.Add($NewPassword)
+                    $NewPasswords = [System.Collections.Generic.List[PSCustomObject]]@()
                 } else {
-                    $NewPasswords."Password $i" = ($Selection | Get-Random -Count $Length) -join ""
+                    $NewPasswords = [Ordered]@{}
                 }
-                $i++
+                $i=1;while ($i -le $Count) {
+                    if ($ExportableOutput) {
+                        $NewPassword = [PSCustomObject]@{ 
+                            "PasswordNumber" = $i
+                            "PasswordValue"  = ($Selection | Get-Random -Count $Length) -join ""
+                        }
+                        $NewPasswords.Add($NewPassword)
+                    } else {
+                        $NewPasswords."Password $i" = ($Selection | Get-Random -Count $Length) -join ""
+                    }
+                    $i++
+                }
             }
         } catch {
             Write-Error $_.Exception.Message
