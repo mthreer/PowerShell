@@ -2,7 +2,6 @@
 
 This script will generate a new strong password in Powershell using Special Characters, Uppercase Letters, Lowercase Letters and Numbers
 
-
 ## Installation/Getting Started ##
 
 Start using the module:
@@ -51,16 +50,18 @@ Default value: $False \
 Include or set to $True to have the output organized into a multi-dimensional array, for use with CSV-exports.
 
 Example:
+
 ```powershell
 New-StrongPassword -Count 10 -ExportableOutput | Export-CSV -Path Output.csv -Encoding UTF8 -Delimiter ";"
 ```
+
 #### **-ExcludeUppercaseLetters** ####
 
-Include or set to $True to exclude any uppercase letters 
+Include or set to $True to exclude any uppercase letters
 
 #### **-ExcludeLowercaseLetters** ####
 
-Include or set to $True to exclude any lowercase letters 
+Include or set to $True to exclude any lowercase letters
 
 #### **-ExcludeNumbers** ####
 
@@ -68,4 +69,4 @@ Include or set to $True to exclude any numbers
 
 #### **-ExcludeSpecialCharacters** ####
 
-Include or set to $True to exclude any special characters 
+Include or set to $True to exclude any special characters
