@@ -4,3 +4,6 @@ Log-IIS-State/diagrams/Solution-Diagram.*
 ### Ignore all sensitive data
 *.sensitive.*
 *.confidential.*
+
+### Ignore .gitignore
+.gitignore
