@@ -3,7 +3,7 @@
 This script will generate a new strong password in Powershell using Special Characters, Uppercase Letters, Lowercase Letters and Numbers
 
 
-# Installation/Getting Started #
+## Installation/Getting Started ##
 
 Start using the module:
 
@@ -11,7 +11,7 @@ Start using the module:
 Import-Module Module.New-StrongPassword.psm1
 ```
 
-## Usage examples ##
+### Usage examples ###
 
 This will generate 10 strong passwords with each having the length of 32.
 
@@ -33,19 +33,19 @@ This will generate a password without any special characters
 New-StrongPassword -ExcludeSpecialCharacters
 ```
 
-## Parameters ##
+### Parameters ###
 
-### **-Count** ###
+#### **-Count** ####
 
 Default value: 1 \
 Set the desired passwords to be generated
 
-### **-Length** ###
+#### **-Length** ####
 
 Default value: 16 \
 Set the desired length of the password(s)
 
-### **-ExportableOutput** ###
+#### **-ExportableOutput** ####
 
 Default value: $False \
 Include or set to $True to have the output organized into a multi-dimensional array, for use with CSV-exports.
@@ -54,18 +54,18 @@ Example:
 ```powershell
 New-StrongPassword -Count 10 -ExportableOutput | Export-CSV -Path Output.csv -Encoding UTF8 -Delimiter ";"
 ```
-### **-ExcludeUppercaseLetters** ###
+#### **-ExcludeUppercaseLetters** ####
 
 Include or set to $True to exclude any uppercase letters 
 
-### **-ExcludeLowercaseLetters** ###
+#### **-ExcludeLowercaseLetters** ####
 
 Include or set to $True to exclude any lowercase letters 
 
-### **-ExcludeNumbers** ###
+#### **-ExcludeNumbers** ####
 
 Include or set to $True to exclude any numbers
 
-### **-ExcludeSpecialCharacters** ###
+#### **-ExcludeSpecialCharacters** ####
 
 Include or set to $True to exclude any special characters 
