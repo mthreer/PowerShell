@@ -6,4 +6,4 @@ Log-IIS-State/diagrams/Solution-Diagram.*
 *.confidential.*
 
 ### Ignore .gitignore
-.gitignore
+*/.gitignore
