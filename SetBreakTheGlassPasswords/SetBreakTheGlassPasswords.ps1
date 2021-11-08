@@ -5,7 +5,12 @@ Try {
     $null = Get-AzureADTenantDetail -ErrorAction Stop
 } 
 Catch [Microsoft.Open.Azure.AD.CommonLibrary.AadNeedAuthenticationException] { 
-    Connect-AzureAD
+    Try {
+	Connect-AzureAD | Out-Null
+    }
+    Catch {
+	exit
+    }
 }
 
 $User = Get-AzureADUser -SearchString (Read-Host -Prompt "Username")
