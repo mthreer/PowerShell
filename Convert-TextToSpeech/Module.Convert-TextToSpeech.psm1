@@ -162,25 +162,6 @@ function Convert-TextToSpeech {
                     $DelimChar = $Delim.Value
                 }
 
-                <#
-                if ($Word -eq "PowerShell") {
-                    $Word = "`$([char]27)[3;22;38;5;15;48;5;27m>_`$([char]27)[0m "
-                    $Word.toCharArray().Foreach{
-                        if (-not($_ -in $specials)) {
-                            $NewKeys += "$($_)"
-                        }
-                        if ($_ -in $specials) {
-                            $NewKeys += "{" + $($_) + "}"
-                        }
-                    }
-                    $Word = $NewKeys -join ""
-                    $null=$wshell.SendKeys("$Word")
-
-                    $WordPosition += 1
-                    Continue;
-                }
-                #>
-
                 # break up a word into characters and type them out
                 for ($CharPosition = 0; $CharPosition -lt $Word.Length) {
                     $Key = $Word.SubString($CharPosition,1)
