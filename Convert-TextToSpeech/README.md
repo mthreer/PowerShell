@@ -2,7 +2,9 @@
 
 ## Description
 
-This script will convert text to speech and optionally write out thespoken words as they are being spoken. It will use the SAPI speechsynthesis API in the ComObject SAPI.SpVoice. 
+This script will convert text to speech and optionally write out the spoken words as they are being spoken. 
+
+It will use the SAPI speechsynthesis API in the ComObject SAPI.SpVoice to Speak.
 
 For writing out text, it uses the wscript.shell ComObject to sendkeys using Windows Script Host.
 
