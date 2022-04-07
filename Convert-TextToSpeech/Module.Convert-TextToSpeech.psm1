@@ -47,12 +47,12 @@ function Convert-TextToSpeech {
     #>
 
     [CmdletBinding()]
-	param ( 
-		[Parameter(
+    param ( 
+        [Parameter(
             Mandatory=$true,
             HelpMessage = "Provide the text that you want spoken."
         )] 
-		[string]$Text,
+        [string]$Text,
         [Parameter(
             Mandatory=$false,
             ValueFromPipeline=$true,
@@ -76,13 +76,18 @@ function Convert-TextToSpeech {
             HelpMessage = "Enables the spoken text to be written out as its being spoken."
         )]
         [switch]$TextWriter = $False
-	)
+    )
 
     Begin {
         switch ($Voice) {
             {$_ -in ("Male","David")}    { $VoiceItem = 0 }
             {$_ -in ("Female","Zari")}   { $VoiceItem = 1 }
         }
+        <# TODO: 
+            Dig into and compare SAPI using:
+            Add-Type -AssemblyName System.Speech
+            $Speech = New-Object System.Speech.Synthesis.SpeechSynthesizer
+        #>
         $textToSpeech = [scriptblock]::Create{
             $payload = $input.GetEnumerator()
             $text = $payload[0]
