@@ -152,9 +152,11 @@ function Convert-TextToSpeech {
             $null=$wshell.SendKeys("`"")
 
             # https://regex101.com/r/x8xPJH/4
-            $WordSeparators = ([regex]::matches("$text","(?<pause> - |[:.,!?] )|(?<delim>\.| )")).Captures.Groups.Where{$_.Name -notmatch "\d" -and $_.Length -ge 1}
+            #$WordSeparators = ([regex]::matches("$text","(?<pause> - |[:.,!?] )|(?<delim>\.| )")).Captures.Groups.Where{$_.Name -notmatch "\d" -and $_.Length -ge 1}
+            $WordSeparators = ([regex]::matches("$text","(?<pause> - |[.:,!?] )|(?<delim>\b\.\b| |\b\.+|\.$)")).Captures.Groups.Where{$_.Name -notmatch "\d" -and $_.Length -ge 1}
             $WordPosition=0;
-            foreach ($Word in $text -split " - |[:.,!?] |\.| ") {
+            #foreach ($Word in $text -split " - |[:.,!?] |\.| ") {
+            foreach ($Word in $text -split " - |[.:,!?] |\b\.\b| |\b\.+|\.$") {
                 Write-Verbose "Word: '$Word'"
 
                 $Delim = $WordSeparators[$WordPosition]

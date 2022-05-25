@@ -122,6 +122,85 @@ $BirthPlace=@{}
 (89..92).foreach{ $BirthPlace."$($_)" = "Norrbottens l$([char]228)n" }
 (93..99).ForEach{ $BirthPlace."$($_)" = "Immigrated" }
 
+function CountAge {
+    [CmdletBinding()]
+    Param
+    (
+        [Parameter(Mandatory=$true,
+                   ValueFromPipeline=$true,
+                   Position=0
+        )]
+        [String]$DateString
+    )
+    BEGIN {
+        $StartDate = [datetime]$DateString
+        $EndDate = (Get-Date)
+        $LeapYears = 0
+        $LeapDays = 0
+    }
+    PROCESS {
+        # Get the duration of time that has passed
+        $Result = New-TimeSpan -Start $StartDate -End $EndDate
+
+        # If there is more than one year
+        if ($EndDate.Year - $StartDate.Year -gt 1) {
+            # We need to loop through each year
+            for ($i = 0; $i -le ($EndDate.Year - $StartDate.Year); $i++) {
+                # To check if the year is a leap year
+                if ([DateTime]::IsLeapYear($EndDate.Year - $i)) {
+                    # If it is, we need to check if february is within our timeline
+                    if (([DateTime]::Parse("$($EndDate.Year - $i)-1-1") -ge $StartDate) -and ([DateTime]::Parse("$($EndDate.Year - $i)-12-31") -le $EndDate)) {
+                        # If it is, we can factor in the leap year
+                        $LeapYears = $LeapYears + 1
+                    } else {
+                        # This area can be fleshed out for partial leap years
+                        # In instances where the start date or end date fall in the middle of a leap year
+                        # For the purposes of this fiddle, I'm not going to go that far in depth
+                    }
+                }
+            }
+        }
+
+        if ($LeapYears -gt 0) {
+            # If we have leap years, treat them as 366 days again... partial leap years aren't factored in
+            $LeapDays = $LeapYears * 366
+        }
+        # Calculate the number of regular years by factoring out the leap year days
+        $CalculatedYears = [Decimal]([Int]$Result.Days - [Int]$LeapDays) / 365.00
+        # Calculate the number of total days remaining, again... partial leap years aren't factored in
+        $CalculatedDays = [Decimal]".$($CalculatedYears.ToString().Split(".")[1])" * 365.00
+        # Aggregate the total years
+        $TotalYears = [Int]$CalculatedYears.ToString().Split(".")[0] + [Int]$LeapYears
+        # Snag the total days
+        $TotalDays = $CalculatedDays.ToString().Split(".")[0]
+
+        # Calculate the number of hours
+        $CalculatedHours = [Decimal]".$($CalculatedDays.ToString().Split(".")[1])" * 24 + [Decimal]$Result.Hours
+        # Snag the total
+        $TotalHours = $CalculatedHours.ToString().Split(".")[0]
+
+        # Calculate the number of minutes
+        $CalculatedMinutes = [Decimal]".$($CalculatedHours.ToString().Split(".")[1])" * 60 + [Decimal]$Result.Minutes
+        # Snag the total
+        $TotalMinutes = $CalculatedMinutes.ToString().Split(".")[0]
+
+        # Calculate the seconds
+        $CalculatedSeconds = [Decimal]".$($CalculatedMinutes.ToString().Split(".")[1])" * 60 + [Decimal]$Result.Seconds
+        # Snag the total
+        $TotalSeconds = $CalculatedSeconds.ToString().Split(".")[0]
+    }
+    END {
+        # Toss the cheese
+        return [PSCustomObject]@{
+            "Years"     = $TotalYears
+            "Days"      = $TotalDays
+            "Hours"     = $TotalHours
+            "Minutes"   = $TotalMinutes
+            "Seconds"   = $TotalSeconds
+        }
+    }
+}
+
 function VerifyValidDate {
     [CmdletBinding()]
     Param
@@ -225,8 +304,9 @@ function VerifyValidDate {
     end {
         if ($year -and $month -and $day) {
             $DateFromStr.Date = "$($Result.Year)-$($DateFromStr.Month.StringValue)-$($DateFromStr.Day.StringValue)"
-            $Age = [datetime]([datetime]::Now.AddYears(-1).AddMonths(-1).AddDays(-1) - [datetime]$DateFromStr.Date).Ticks
-            if ($Age) { $Result.Age = "$($Age.Year) years $($Age.Month) months $($Age.Day) Days" }
+            #$Age = [datetime]([datetime]::Now.AddYears(-1).AddMonths(-1).AddDays(-1) - [datetime]$DateFromStr.Date).Ticks
+            $Age = CountAge -DateString $DateFromStr.Date
+            if ($Age) { $Result.Age = "$($Age.Years) years $($Age.Days) Days" }
             $script:ValidDate = $True
         } else { 
             return $False
