@@ -50,6 +50,8 @@ function Convert-TextToSpeech {
     param ( 
         [Parameter(
             Mandatory=$true,
+            ValueFromPipeline=$true,
+            ValueFromPipelineByPropertyName=$true,
             HelpMessage = "Provide the text that you want spoken."
         )] 
         [string]$Text,
@@ -64,15 +66,11 @@ function Convert-TextToSpeech {
         [string]$Voice = "David",
         [Parameter(
             Mandatory=$false,
-            ValueFromPipeline=$true,
-            ValueFromPipelineByPropertyName=$true,
             HelpMessage = "Provide a window title to be used for receiving the spoken text as its being spoken. This will also automatically enable `$TextWriter."
         )]
         [string]$TargetWindowTitle,
         [Parameter(
             Mandatory=$false,
-            ValueFromPipeline=$true,
-            ValueFromPipelineByPropertyName=$true,
             HelpMessage = "Enables the spoken text to be written out as its being spoken."
         )]
         [switch]$TextWriter = $False
@@ -88,10 +86,14 @@ function Convert-TextToSpeech {
             Add-Type -AssemblyName System.Speech
             $Speech = New-Object System.Speech.Synthesis.SpeechSynthesizer
         #>
+
+        # Create a scriptblock, that we'll use first thing in the process block
         $textToSpeech = [scriptblock]::Create{
+            # collect the input that will be given to start-job -InputObject
             $payload = $input.GetEnumerator()
             $text = $payload[0]
             $VoiceItem = $payload[1]
+            # create the text-to-speech (TTS) object
             $vObject = New-Object -ComObject SAPI.SpVoice
             $vObject.Voice = $vObject.GetVoices().Item($VoiceItem)
             $vObject.Speak($text)
@@ -102,7 +104,8 @@ function Convert-TextToSpeech {
         }
 
         if ($TextWriter) {
-            # Define the chars that later needs to be wrapped in curly brackets {}
+            # Define the chars that has a special meaning, we'll later need to wrap these in curly braces {} for it to be written out correctly.
+            # See: https://social.technet.microsoft.com/wiki/contents/articles/5169.vbscript-sendkeys-method.aspx
             $specials = @(
                 "%"
                 "("
@@ -117,7 +120,7 @@ function Convert-TextToSpeech {
             )
 
             # Word delimiters and how long to pause writing in milliseconds
-            # Experimental findings, but as close as I could get. Timing's may vary due to different sentences and words.
+            # Experimental findings, but as close as I could get. Timing's may still vary due to different pronunciations of sentences and words.
             $pause = @{
                 " " =   50..100
                 "." =   1000..1300
@@ -128,17 +131,17 @@ function Convert-TextToSpeech {
                 ":" =   600..700
             }
 
-            # Add focus back to current window upon exit and failure to send keys
+            # Grab the current window title, we'll add focus back to the current window upon exit and failure to send keys
             $CurrentWindowTitle = $Host.UI.RawUI.WindowTitle
         } 
         if ($TextWriter -and (-not($TargetWindowTitle)) ) {
-            Write-Warning "Its strongly recommended to configure a target window title together with the text writer in order to see the text being written as its spoken."
+            Write-Warning "Make sure to configure a target window title when using the TextWriter switch, in order to see the text being written as its spoken."
         }
     }
 
     Process {
-        # start speech in new thread
-        $Job = start-job $textToSpeech -InputObject @($text,$voiceItem)
+        # Start speech in a new thread, we'll clean up the job afterwards
+        $Job = Start-Job $textToSpeech -InputObject @($text,$voiceItem)
 
         if ($TextWriter) {
             # create Windows Script Host object to send keys to specific windows by title name
@@ -165,7 +168,7 @@ function Convert-TextToSpeech {
                     $DelimChar = $Delim.Value.Trim(" ")
                 }
                 if ($Delim.Value -and ($Delim.Name -eq "delim")) {
-                    # Do not remove spaces, since this char should contain either a space or a dot.
+                    # Do not remove spaces for these word delimiters, since this delim char should contain it
                     $DelimChar = $Delim.Value
                 }
 
@@ -173,15 +176,17 @@ function Convert-TextToSpeech {
                 for ($CharPosition = 0; $CharPosition -lt $Word.Length) {
                     $Key = $Word.SubString($CharPosition,1)
                     if ($Key -in $specials) {
+                        # wrap the special char in curly braces
                         $Key = "{" + $Key + "}"
                     }
 
                     Try {
+                        # Send the key / character
                         $null=$wshell.SendKeys("$Key")
                     }
                     Catch {
                         $null=$wshell.AppActivate("$CurrentWindowTitle")
-                        Write-Error "Script stopped prematurely!"
+                        Write-Error "Doh! We had an error."
                         break
                     }
                     Start-Sleep -Milliseconds (10..50 | Get-Random)
@@ -198,10 +203,10 @@ function Convert-TextToSpeech {
                     $null=$wshell.SendKeys("$($Delim.Value)")
                     Start-Sleep -Milliseconds $ms
                 }
-                # trash the DelimChar value before next iteration
+                # reset the DelimChar value before next iteration
                 $DelimChar = $null
 
-                # Set position of next word
+                # Set position of next word (word increment)
                 $WordPosition += 1
 
                 # speak out word per word (testing)
@@ -212,9 +217,11 @@ function Convert-TextToSpeech {
         } # End if TextWriter
     }
     End {
+        # Add focus back to the parent window
         if ($TextWriter) {
             $null=$wshell.AppActivate("$CurrentWindowTitle")
         }
+        # We promised to clean up after ourselves
         do {
             $JobState = (Get-Job -Id $Job.Id).State
         } until ($JobState -eq "Completed")
